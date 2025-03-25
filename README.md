@@ -1,4 +1,6 @@
-# SAE-Reasoning
+# I Have Covered All the Bases Here: Interpreting Reasoning Features in Large Language Models via Sparse Autoencoders
+
+This code is the official implementation of [Interpreting Reasoning Features in Large Language Models via Sparse Autoencoders](https://arxiv.org/abs/2503.18878).
 
 The full pipeline will be released no later than 26.03.2025. The `README.md` will be updated accordingly. 
 
