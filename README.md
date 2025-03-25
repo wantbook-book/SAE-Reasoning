@@ -1,4 +1,6 @@
-# RSI-Interpretability
+# SAE-Reasoning
+
+The full pipeline will be released no later than 26.03.2025. The `README.md` will be updated accordingly. 
 
 ## Installation
 
