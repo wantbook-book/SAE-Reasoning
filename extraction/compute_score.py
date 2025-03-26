@@ -376,6 +376,7 @@ def compute_score(
     expand_range: Tuple[int, int] = None,
     ignore_tokens: List[int] = None,
     n_samples: int = 4096,
+    alpha: float = 1.0,
     column_name: str = "text",
     minibatch_size_features: int = 256,
     minibatch_size_tokens: int = 64,
@@ -456,7 +457,8 @@ def compute_score(
         tokens=token_dataset["tokens"][:n_samples],
         reason_tokens=reason_tokens,
         ignore_tokens=ignore_tokens,
-        expand_range=expand_range
+        expand_range=expand_range,
+        alpha=alpha
     )
 
     # save feature scores

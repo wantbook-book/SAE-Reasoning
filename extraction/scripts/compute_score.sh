@@ -9,8 +9,9 @@ python extraction/compute_score.py \
     --expand_range 1,2 \
     --ignore_tokens 128000,128001 \
     --n_samples 4096 \
+    --alpha 0.7 \
     --minibatch_size_features 48 \
     --minibatch_size_tokens 64 \
     --output_dir extraction/scores \
-    --num_chunks 4 \
-    --chunk_num 3
+    --num_chunks 1 \
+    --chunk_num 0
