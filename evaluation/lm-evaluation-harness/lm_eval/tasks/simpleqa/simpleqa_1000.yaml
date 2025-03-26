@@ -1,0 +1,28 @@
+tag:
+  - facts
+task: simpleqa-1000
+dataset_path: andreuka18/SimpleQA-1000
+dataset_name: null
+output_type: generate_until
+test_split: test
+doc_to_text: "{{problem}}"
+process_results: !function utils.process_results
+doc_to_target: "{{answer}}"
+generation_kwargs:
+  until:
+    - "<｜end▁of▁sentence｜>"
+  temperature: 0.6
+  top_p: 0.95
+repeats: 1
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+  - metric: not_attempted
+    aggregation: mean
+    higher_is_better: false
+
+metadata:
+  version: 1.0
+dataset_kwargs:
+  trust_remote_code: true

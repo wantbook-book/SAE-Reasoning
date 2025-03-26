@@ -1,0 +1,30 @@
+tag: gpqa
+task: openai_gpqa_diamond
+dataset_path: Idavidrein/gpqa
+process_docs: !function utils.process_docs
+dataset_name: gpqa_diamond
+output_type: generate_until
+training_split: train
+validation_split: train
+test_split: null
+doc_to_text: !function utils.doc_to_text
+process_results: !function utils.process_results
+doc_to_target: answer
+generation_kwargs:
+  until:
+    - "Problem:"
+    - "<｜end▁of▁sentence｜>"
+  temperature: 0.6
+  top_p: 0.95
+repeats: 1
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+  - metric: extracted_answers
+    aggregation: bypass
+    higher_is_better: true
+metadata:
+  version: 2.0
+dataset_kwargs:
+  trust_remote_code: true
