@@ -2,7 +2,7 @@
 
 This code is the official implementation of [Interpreting Reasoning Features in Large Language Models via Sparse Autoencoders](https://arxiv.org/abs/2503.18878).
 
-Right now we continue our experiments with different *reasoning* sets and hyperparameters to improve our results. Stay tuned!
+Right now we continue our experiments with different *reasoning* sets and hyperparameters to improve our results. We will release top feature indices and corresponding dashboards soon. Stay tuned!
 
 ## Preliminaries
 
