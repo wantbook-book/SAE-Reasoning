@@ -1,0 +1,37 @@
+gpu_id=7
+sae_strength=2.0
+sae_feature_idx=61104
+sae_max_activation=5
+# aime
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks aime2024_nofigures --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-aime-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# math-500
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks math-500 --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-math-500-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# gpqa
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks openai_gpqa_diamond --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-gpqa-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+
+sae_feature_idx=54788
+sae_max_activation=3.836
+# aime
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks aime2024_nofigures --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-aime-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# math-500
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks math-500 --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-math-500-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# gpqa
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks openai_gpqa_diamond --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-gpqa-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+
+sae_feature_idx=60248
+sae_max_activation=3.292
+# aime
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks aime2024_nofigures --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-aime-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# math-500
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks math-500 --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-math-500-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# gpqa
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks openai_gpqa_diamond --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-gpqa-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+
+sae_feature_idx=6903
+sae_max_activation=1.093
+# aime
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks aime2024_nofigures --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-aime-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# math-500
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks math-500 --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-math-500-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
+# gpqa
+VLLM_USE_V1=0 CUDA_VISIBLE_DEVICES=${gpu_id} lm_eval --model vllm --model_args pretrained=deepseek-ai/DeepSeek-R1-Distill-Llama-8B,dtype=bfloat16,tensor_parallel_size=1,gpu_memory_utilization=0.85,sae_release=andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts,sae_id=blocks.19.hook_resid_post,sae_feature_idx=${sae_feature_idx},sae_strength=${sae_strength},sae_max_activation=${sae_max_activation} --tasks openai_gpqa_diamond --batch_size auto --apply_chat_template --output_path deepseek-llama-8b-gpqa-sae-${sae_feature_idx} --log_samples --gen_kwargs "max_gen_toks=32768,cutoff_token=128014"
