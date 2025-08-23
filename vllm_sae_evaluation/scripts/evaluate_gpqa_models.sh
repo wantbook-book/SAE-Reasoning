@@ -7,12 +7,12 @@ ntrain=0
 export VLLM_USE_V1=0
 export TOKENIZERS_PARALLELISM=false
 # ================need to modify=======================
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0
 temperature=0.6
 top_p=0.95
 max_new_tokens=32768
 models=(
-    "/angel/fwk/models/deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
+    "/pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
 )
 chat_template_args="--apply_chat_template"
 n_sampling=4

@@ -1,0 +1,4 @@
+deepspeed
+peft
+trl==0.15.2
+pip install flash-attn==2.7.3 --no-build-isolation
