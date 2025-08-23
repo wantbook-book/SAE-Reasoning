@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-save_dir="eval_results/"
+save_dir="outputs/"
 gpu_util=0.9
 ntrain=0
 export VLLM_USE_V1=0

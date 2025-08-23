@@ -23,10 +23,10 @@ def format_metric_value(value: float, precision: int = 1) -> str:
 def print_metrics_oneline(data: Dict[str, Any], model_name: str, dataset_name: str):
     """以一行格式打印指标"""
     # 提取关键指标
-    pass_at_1_avg = data.get('accuracy_avg', data.get('accuracy', 'N/A'))*100
-    pass_at_1_std = data.get('accuracy_std', 'N/A')*100
-    pass_at_k = data.get('pass@k', 'N/A')*100
-    maj_at_k = data.get('maj@k', 'N/A')*100
+    pass_at_1_avg = data.get('accuracy_avg', data.get('mean_accuracy', 'N/A'))*100
+    pass_at_1_std = data.get('accuracy_std', data.get('std_accuracy', 'N/A'))*100
+    pass_at_k = data.get('pass@k', data.get('pass@4', 'N/A'))*100
+    maj_at_k = data.get('maj@k', data.get('maj@4', 'N/A'))*100
     
     # 格式化 Pass@1 (合并平均值和标准差)
     if pass_at_1_avg != 'N/A' and pass_at_1_std != 'N/A':
@@ -81,8 +81,46 @@ def print_math_results(dir_path: Path):
     
     # 打印处理总结
     print(f"\n{Colors.BOLD}{Colors.OKCYAN}📈 处理完成！共处理了 {processed_count} 个模型/数据集组合{Colors.ENDC}")
-                            
-if __name__ == '__main__':
-    dir_path = Path("/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
-    print_math_results(dir_path)
+
+def print_gpqa_results(dir_path: Path):
+    """打印数学评估结果"""
+    processed_count = 0
     
+    # 打印表头
+    print(f"\n{Colors.BOLD}{Colors.HEADER}{'模型名称':<30} | {'数据集':<20} | {'Pass@1':<18} | {'Pass@k':<14} | {'Maj@k':<14}{Colors.ENDC}")
+    print(f"{Colors.BOLD}{'─' * 30} | {'─' * 20} | {'─' * 18} | {'─' * 14} | {'─' * 14}{Colors.ENDC}")
+    
+    # 遍历模型目录
+    for model_dir in sorted(dir_path.iterdir()):
+        if model_dir.is_dir():
+            # 遍历数据集目录
+            for dataset_dir in sorted(model_dir.iterdir()):
+                if dataset_dir.is_dir():
+                    # 查找 metrics.json 文件
+                    metrics_files = list(dataset_dir.glob('*metric.json'))
+                    if metrics_files:
+                        metrics_file = metrics_files[0]  # 取第一个找到的文件
+                        try:
+                            with open(metrics_file, 'r', encoding='utf-8') as f:
+                                data = json.load(f)
+                            
+                            # 从路径中提取模型和数据集信息
+                            model_name = model_dir.name
+                            dataset_name = dataset_dir.name
+                            
+                            print_metrics_oneline(data, model_name, dataset_name)
+                            processed_count += 1
+                            
+                        except (json.JSONDecodeError, FileNotFoundError) as e:
+                            print(f"{Colors.FAIL}❌ 读取文件失败 {metrics_file}: {e}{Colors.ENDC}")
+    
+    # 打印处理总结
+    print(f"\n{Colors.BOLD}{Colors.OKCYAN}📈 处理完成！共处理了 {processed_count} 个模型/数据集组合{Colors.ENDC}")
+
+   
+if __name__ == '__main__':
+    # dir_path = Path("/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
+    # print_math_results(dir_path)
+    
+    dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/eval_results/pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B")
+    print_gpqa_results(dir_path)

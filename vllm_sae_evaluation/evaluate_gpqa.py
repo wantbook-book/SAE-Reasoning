@@ -411,7 +411,7 @@ def main():
     summary_path = os.path.join(save_result_dir, f"metric.json")
     with open(summary_path, 'w') as f:
         json.dump(
-            {"mean_accuracy": mean_accuracy, "std_accuracy": std_accuracy, "accuracy_list": accuracy_list, f"maj@{args.n_sampling}": maj_accuracy, f"pass@{args.n_sampling}": pass_accuracy}, 
+            {"accuracy_avg": mean_accuracy, "accuracy_std": std_accuracy, "accuracy_list": accuracy_list, f"maj@k": maj_accuracy, f"pass@k": pass_accuracy}, 
             f, indent=4
         )
 
@@ -475,6 +475,7 @@ if __name__ == "__main__":
     save_result_dir = os.path.join(
         args.save_dir, args.model[1:] if args.model[0] == '/' else args.model
     )
+    save_result_dir = os.path.join(save_result_dir, f'gpqa_sampling_{args.n_sampling}')
     # Extract intervention parameters if intervention_config exists
     if args.intervention_config:
         try:
@@ -498,7 +499,6 @@ if __name__ == "__main__":
         
         # Append intervention parameters to save_result_dir
         save_result_dir = os.path.join(save_result_dir, f"sae_{sae_feature_idx}_{strength}_{max_activation}")
-    save_result_dir = os.path.join(save_result_dir, f'gpqa_sampling_{args.n_sampling}')
     timestamp = time.time()
     time_str = time.strftime('%m-%d_%H-%M', time.localtime(timestamp))
     os.makedirs(save_result_dir, exist_ok=True)
