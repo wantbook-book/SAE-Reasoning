@@ -8,7 +8,7 @@ sae_hook_point: blocks.19.hook_resid_post
 sae_type: pretrained
 
 base_model_name: /pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B
-elicitation_dataset_name: /pubshare/fwk/code/sae/SAE-Reasoning2/sft/dataset/datasets--openbmb--RLPR-Train-Dataset/snapshots/922eeb37157ebce90c1ee8233cdf04f04fbad728/rlpr_train_format.jsonl
+elicitation_dataset_name: /pubshare/fwk/code/sae/SAE-Reasoning2/sft/dataset/rlpr/rlpr_train_format.jsonl
 
 lora_r: 32
 lora_alpha: 128
