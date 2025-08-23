@@ -1,4 +1,7 @@
 evaluation/results
+sft/ckpts
+sft/logs
+.vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
