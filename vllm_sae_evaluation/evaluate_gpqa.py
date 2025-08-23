@@ -1,7 +1,9 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import csv
 import json
 import argparse
-import os
 import torch
 import random
 import transformers
@@ -13,7 +15,10 @@ import logging
 import sys
 import debugpy
 import numpy as np
-
+from utils.sae_utils import add_hooks, get_intervention_hook, get_clamp_hook 
+from importlib.util import find_spec
+from sae_lens import SAE
+import copy
 # SAE Integration Support
 # This script supports SAE (Sparse Autoencoder) integration with vLLM
 # Use --sae_path or --sae_release to enable SAE functionality

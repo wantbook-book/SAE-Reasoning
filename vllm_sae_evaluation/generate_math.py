@@ -1,16 +1,18 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from vllm import LLM, SamplingParams
 import argparse
-from data_loader import load_data
+from utils.data_loader import load_data
 import random
-import os
 from datetime import datetime
-from model_utils import load_hf_lm_and_tokenizer, generate_completions
-from utils import set_seed, load_jsonl, save_jsonl, construct_prompt
+from utils.model_utils import load_hf_lm_and_tokenizer, generate_completions
+from utils.utils import set_seed, load_jsonl, save_jsonl, construct_prompt
 from transformers import AutoTokenizer
 import json
 from tqdm import tqdm
 import time
-from sae_utils import add_hooks, get_intervention_hook, get_clamp_hook 
+from utils.sae_utils import add_hooks, get_intervention_hook, get_clamp_hook 
 from importlib.util import find_spec
 from sae_lens import SAE
 import copy
