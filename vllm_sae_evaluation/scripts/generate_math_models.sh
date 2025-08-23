@@ -14,10 +14,10 @@ SPLIT="test"
 MODEL_PATH_LIST=(
     "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
 )
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0
 DATA_DIR="dataset/"
-# DATA_NAME="math_500,aime24"
-DATA_NAME="aime24"
+DATA_NAME="math_500,aime24"
+# DATA_NAME="aime24"
 
 N_SAMPLING=4
 top_p=0.95

@@ -77,6 +77,42 @@ def compare_answers(extracted: Any, gold: Any) -> bool:
         # If comparison fails (e.g. different types), return False
         return False
 
+def calculate_maj_at_k(code_responses: list[str], verify_func) -> str:
+    """Calculate maj@k by finding the most frequent answer among k candidates."""
+    if len(code_responses) <= 1:
+        return code_responses[0] if code_responses else None
+    
+    # Create equal matrix to compare all responses
+    equal_matrix = [[False] * len(code_responses) for _ in range(len(code_responses))]
+    
+    for i in range(len(code_responses)):
+        for j in range(i, len(code_responses)):
+            if i == j:
+                equal_matrix[i][j] = True
+                equal_matrix[j][i] = True
+            else:
+                is_equal = False
+                try:
+                    # Check if responses i and j are equivalent
+                    grade, _ = verify_func([code_responses[i]], [code_responses[j]])
+                    is_equal = grade == 1.0
+                    if not is_equal:
+                        grade, _ = verify_func([code_responses[j]], [code_responses[i]])
+                        is_equal = grade == 1.0
+                except:
+                    is_equal = False
+                equal_matrix[i][j] = is_equal
+                equal_matrix[j][i] = is_equal
+    
+    # Count how many responses are equivalent to each response
+    maj_count = [sum(equal_matrix[i]) for i in range(len(code_responses))]
+    
+    # Find the response with the highest count (majority)
+    majority_idx = maj_count.index(max(maj_count))
+    
+    # Return the majority response
+    return code_responses[majority_idx]
+
 def process_answers(input_list: list[dict], gold_is_latex: bool) -> Union[list[dict], dict]:
     """Process each answer through the sympy extraction workflow and compare with gold using math_verify."""
     results = []
@@ -85,6 +121,7 @@ def process_answers(input_list: list[dict], gold_is_latex: bool) -> Union[list[d
 
     correct_count = None
     any_correct_count = 0
+    maj_at_k_correct_count = 0
     total_count = 0
     
     # Create the verification function
@@ -157,9 +194,26 @@ def process_answers(input_list: list[dict], gold_is_latex: bool) -> Union[list[d
             if item_results[i]['is_correct']:
                 correct_count[i] += 1
         
+        # Calculate maj@k
+        maj_at_k_correct = False
+        if len(code_responses) > 1:
+            try:
+                majority_response = calculate_maj_at_k(code_responses, verify_func)
+                # Check if majority response is correct against gold answer
+                grade, _ = verify_func([item['answer']], [majority_response])
+                if grade != 1:
+                    grade, _ = verify_func([majority_response], [item['answer']])
+                maj_at_k_correct = grade == 1
+            except Exception as e:
+                maj_at_k_correct = False
+        
+        if maj_at_k_correct:
+            maj_at_k_correct_count += 1
+        
         # Add evaluation results to the item
         item['code_evaluations'] = item_results
         item['any_correct'] = item_correct
+        item['maj_at_k_correct'] = maj_at_k_correct
         any_correct_count += item_correct
         item['num_responses'] = len(code_responses)
         item['num_correct'] = sum(1 for r in item_results if r['is_correct'])
@@ -169,11 +223,15 @@ def process_answers(input_list: list[dict], gold_is_latex: bool) -> Union[list[d
     accuracy = []
     for i in range(code_len):
         accuracy.append(correct_count[i] / total_count if total_count > 0 else 0)
+    # Calculate maj@k accuracy
+    maj_at_k_accuracy = maj_at_k_correct_count / total_count if total_count > 0 else 0
+    
     print(f"\nEvaluation Results:")
     print(f"Total examples: {total_count}")
     print(f"Correct answers: {correct_count}")
     print(f"Accuracy: {accuracy}")
     print(f"Pass@k: {any_correct_count / total_count if total_count > 0 else 0}")
+    print(f"Maj@k: {maj_at_k_accuracy:.4f}")
     # Calculate mean and std of accuracy
     accuracy_mean = sum(accuracy) / len(accuracy) if accuracy else 0
     accuracy_std = (sum((x - accuracy_mean) ** 2 for x in accuracy) / len(accuracy)) ** 0.5 if accuracy else 0
@@ -182,8 +240,11 @@ def process_answers(input_list: list[dict], gold_is_latex: bool) -> Union[list[d
     
     # Add summary stats to the dataframe
     result = {
+        'accuracy_avg': accuracy_mean,
+        'accuracy_std': accuracy_std,
         'accuracy': accuracy,
         'pass@k': any_correct_count / total_count if total_count > 0 else 0,
+        'maj@k': maj_at_k_accuracy,
         'total_count': total_count,
         'correct_count': correct_count
     }

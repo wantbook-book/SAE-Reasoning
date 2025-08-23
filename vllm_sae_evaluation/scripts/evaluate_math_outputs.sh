@@ -5,6 +5,30 @@ start_time=$(date +%s)
 
 # ================need to modify=======================
 OUTPUT_DIRS=(
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_1160_1.0_5.395"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_14907_1.0_6.228"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_15796_1.0_5.084"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_16441_1.0_5.0"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_16778_1.0_5.0"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_18202_1.0_6.036"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_20201_1.0_7.796"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_24648_1.0_14.844"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_25953_1.0_5.0"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_33362_1.0_5.684"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_3466_1.0_1.63"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_3942_1.0_5.0"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_4395_1.0_5.0"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_44815_1.0_13.059"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_46691_1.0_5.0"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_48684_1.0_1.96"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_49883_1.0_6.022"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_50219_1.0_2.674"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_50876_1.0_3.455"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_54529_1.0_15.304"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_54788_1.0_3.836"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_60248_1.0_3.292"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_61104_1.0_5.0"
+    # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_6907_1.0_1.093"
     "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4"
 )
 # SUBDIRS=("math_500" "math_hard" "asdiv" "college_math" "tabmwp")
@@ -12,7 +36,7 @@ SUBDIRS=("math_500" "aime24")
 # SUBDIRS=("aime24")
 # FILE_NAME="test_pure_-1_seed0_t0.0_s0_e-1.jsonl"
 # FILE_NAME="test_pure_-1_seed0_t0.6_s0_e-1.jsonl"
-FILE_NAME="test_pure_-1_seed175569182_t0.6_pf_math_cot_s0_e-1.jsonl"
+FILE_NAME="test_pure_-1_seed0_t0.6_pf_math_cot_s0_e-1.jsonl"
 # ================need to modify=======================
 
 EVAL_SCRIPT="evaluate_math_outputs.py"

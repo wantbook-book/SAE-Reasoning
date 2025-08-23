@@ -6,7 +6,8 @@ process_docs: !function utils.process_docs
 dataset_name: null
 output_type: generate_until
 test_split: train
-doc_to_text:  "Please reason step by step, and put your final answer within \\boxed{}.\nProblem: {{problem}}\nAnswer:"
+# doc_to_text:  "Please reason step by step, and put your final answer within \\boxed{}.\nProblem: {{problem}}\nAnswer:"
+doc_to_text:  "{{problem}}\nPlease reason step by step, and put your final answer within \\boxed{}."
 process_results: !function utils.process_results
 doc_to_target: "{{answer}}"
 generation_kwargs:
