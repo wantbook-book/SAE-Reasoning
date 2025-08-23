@@ -1,0 +1,19 @@
+{
+  "data_source": "WebInstruct-verified",
+  "prompt": [
+    {
+      "content": "A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think> <answer> answer here </answer>.",
+      "role": "system"
+    },
+    {
+      "content": "If the firm could reduce the average age of its inventory from 73 days, to 63 day, by how much would it reduce its dollar investment in working capital?",
+      "role": "user"
+    }
+  ],
+  "ability": "Business",
+  "reward_model": {
+    "ground_truth": "2.74%",
+    "style": "rule"
+  },
+  "extra_info": null
+}

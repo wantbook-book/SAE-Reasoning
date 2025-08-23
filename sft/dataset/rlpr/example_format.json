@@ -1,0 +1,7 @@
+{
+  "idx": 0,
+  "problem": "If the firm could reduce the average age of its inventory from 73 days, to 63 day, by how much would it reduce its dollar investment in working capital?",
+  "answer": "2.74%",
+  "ability": "Business",
+  "data_source": "WebInstruct-verified"
+}
