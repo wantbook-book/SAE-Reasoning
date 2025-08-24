@@ -12,7 +12,7 @@ from transformers import AutoTokenizer
 import json
 from tqdm import tqdm
 import time
-from utils.sae_utils import add_hooks, get_intervention_hook, get_clamp_hook 
+from utils.sae_utils import add_hooks, get_intervention_hook, get_clamp_hook, get_multi_intervention_hook
 from importlib.util import find_spec
 from sae_lens import SAE
 import copy
@@ -93,6 +93,12 @@ def parse_args():
         default="hook_resid_post",
         help="Hook point for SAE intervention.",
     )
+    parser.add_argument(
+        '--intervention_type',
+        type=str,
+        default=None,
+        help='Intervention type, can be "clamp" or "intervention".',
+    )
     parser.add_argument("--gpu_util", "-gu", type=str, default="0.8")
 
     args = parser.parse_args()
@@ -134,9 +140,22 @@ def prepare_data(data_name, args):
         try:
             # Try parsing as JSON string
             intervention_config = json.loads(args.intervention_config)
-            sae_feature_idx = intervention_config.get('feature_idx', 'unknown')
-            strength = intervention_config.get('strength', 'unknown')
-            max_activation = intervention_config.get('max_activation', 'unknown')
+            if isinstance(intervention_config[list(intervention_config.keys())[0]], dict):
+                feature_idxs = []
+                max_activations = []
+                strengths = []
+                for feature_idx, intervene_cfg in intervention_config.items():
+                    feature_idxs.append(int(feature_idx))
+                    max_activations.append(intervene_cfg["max_activation"])
+                    strengths.append(intervene_cfg["strength"])
+                sae_feature_idx = '_'.join([str(f) for f in feature_idxs])
+                sae_feature_idx = args.intervention_type + '_' + sae_feature_idx
+                strength = '_'.join([str(s) for s in strengths])
+                max_activation = '_'.join([str(a) for a in max_activations])
+            else:
+                sae_feature_idx = intervention_config.get('feature_idx', 'unknown')
+                strength = intervention_config.get('strength', 'unknown')
+                max_activation = intervention_config.get('max_activation', 'unknown')
         except json.JSONDecodeError:
             # Try reading from file
             if os.path.exists(args.intervention_config):
@@ -264,17 +283,36 @@ def setup(args):
                 #         'strength': 1.0,
                 #     }
                 # }
-                for feature_idx, intervene_cfg in intervention_config.items():
-                    direction = sae.W_dec[feature_idx].clone()
-                    max_activation = intervene_cfg["max_activation"]
-                    strength = intervene_cfg["strength"]
-                    
+                if args.intervention_type == 'clamp':
+                    for feature_idx, intervene_cfg in intervention_config.items():
+                        feature_idx = int(feature_idx)
+                        direction = sae.W_dec[feature_idx].clone()
+                        max_activation = intervene_cfg["max_activation"]
+                        strength = intervene_cfg["strength"]
+                        
+                        sae_hooks.append(
+                            (
+                                lm_model.model.layers[sae.cfg.hook_layer],
+                                get_clamp_hook(direction, max_activation, strength)
+                            )
+                        )
+                elif args.intervention_type == 'intervention':
+                    feature_idxs = []
+                    max_activations = []
+                    strengths = []
+                    for feature_idx, intervene_cfg in intervention_config.items():
+                        feature_idxs.append(int(feature_idx))
+                        max_activations.append(intervene_cfg["max_activation"])
+                        strengths.append(intervene_cfg["strength"])
                     sae_hooks.append(
                         (
                             lm_model.model.layers[sae.cfg.hook_layer],
-                            get_clamp_hook(direction, max_activation, strength)
+                            get_multi_intervention_hook(sae, feature_idxs, max_activations, strengths)
                         )
                     )
+                else:
+                    raise ValueError(f"Invalid intervention type: {args.intervention_type}")
+
             else:
                 # 通用干预
                 sae_hooks = [

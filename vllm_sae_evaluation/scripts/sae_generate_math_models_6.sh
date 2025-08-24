@@ -29,10 +29,13 @@ CHAT_TEMPLATE_ARG="--apply_chat_template"
 sae_release="andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts"
 sae_id="blocks.19.hook_resid_post"
 intervention_configs=(
-    '{"feature_idx": 16441, "max_activation": 5.0, "strength": 1.0}'
-    '{"feature_idx": 16778, "max_activation": 5.0, "strength": 1.0}'
-    '{"feature_idx": 25953, "max_activation": 5.0, "strength": 1.0}'
+    # '{"feature_idx": 16441, "max_activation": 5.0, "strength": 1.0}'
+    # '{"feature_idx": 16778, "max_activation": 5.0, "strength": 1.0}'
+    # '{"feature_idx": 25953, "max_activation": 5.0, "strength": 1.0}'
+    '{"15796": {"max_activation": 5.084, "strength": 1.0}, "61104": {"max_activation": 5.0, "strength": 1.0}}'
+    '{"15796": {"max_activation": 5.084, "strength": 1.0}, "1160": {"max_activation": 5.395, "strength": 1.0}}'
 )
+intervention_type=clamp
 # ================need to modify=======================
 
 for MODEL_NAME_OR_PATH in "${MODEL_PATH_LIST[@]}"; do
@@ -62,6 +65,7 @@ for MODEL_NAME_OR_PATH in "${MODEL_PATH_LIST[@]}"; do
             --sae_id $sae_id \
             --intervention_config "$intervention_config" \
             --gpu_util ${gpu_util} \
+            --intervention_type $intervention_type \
             ${CHAT_TEMPLATE_ARG}
     done
 done

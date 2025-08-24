@@ -37,7 +37,7 @@ for MODEL_NAME_OR_PATH in "${MODEL_PATH_LIST[@]}"; do
         --split "${SPLIT}" \
         --prompt_type "${PROMPT_TYPE}" \
         --num_test_sample "${NUM_TEST_SAMPLE}" \
-        --seed $(date +%s%N | cut -b1-9) \
+        --seed 0 \
         --temperature ${TEMPRATURE} \
         --n_sampling ${N_SAMPLING} \
         --top_p ${top_p} \

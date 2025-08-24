@@ -29,9 +29,11 @@ CHAT_TEMPLATE_ARG="--apply_chat_template"
 sae_release="andreuka18/deepseek-r1-distill-llama-8b-lmsys-openthoughts"
 sae_id="blocks.19.hook_resid_post"
 intervention_configs=(
-    '{"feature_idx": 24648, "max_activation": 14.844, "strength": 1.0}'
-    '{"feature_idx": 33362, "max_activation": 5.684, "strength": 1.0}'
-    '{"feature_idx": 44815, "max_activation": 13.059, "strength": 1.0}'
+    # '{"feature_idx": 24648, "max_activation": 14.844, "strength": 1.0}'
+    # '{"feature_idx": 33362, "max_activation": 5.684, "strength": 1.0}'
+    # '{"feature_idx": 44815, "max_activation": 13.059, "strength": 1.0}'
+    '{"15796": {"max_activation": 5.084, "strength": 1.0}, "61104": {"max_activation": 5.0, "strength": 1.0}}'
+    '{"15796": {"max_activation": 5.084, "strength": 1.0}, "1160": {"max_activation": 5.395, "strength": 1.0}}'
 )
 # ================need to modify=======================
 

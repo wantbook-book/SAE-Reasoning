@@ -78,6 +78,42 @@ def get_intervention_hook(
     return hook_fn
 
 
+def get_multi_intervention_hook(
+    sae: SAE,
+    feature_idxs: list[int],
+    max_activations: list[float],
+    strengths: list[float],
+):
+    def hook_fn(module, input, output):
+        if not GlobalSAE.use_sae:
+            return output
+
+        if torch.is_tensor(output):
+            activations = output.clone()
+        else:
+            activations = output[0].clone()
+
+        if sae.device != activations.device:
+            sae.device = activations.device
+            sae.to(sae.device)
+
+        features = sae.encode(activations)
+        reconstructed = sae.decode(features)
+        error = activations.to(features.dtype) - reconstructed
+
+        for feature_idx, max_activation, strength in zip(feature_idxs, max_activations, strengths):
+            features[..., feature_idx] = max_activation * strength
+
+        activations_hat = sae.decode(features) + error
+        activations_hat = activations_hat.type_as(activations)
+
+        if torch.is_tensor(output):
+            return activations_hat
+        else:
+            return (activations_hat,) + output[1:] if len(output) > 1 else (activations_hat,)
+
+    return hook_fn
+
 def get_clamp_hook(
     direction: Tensor,
     max_activation: float = 1.0,
