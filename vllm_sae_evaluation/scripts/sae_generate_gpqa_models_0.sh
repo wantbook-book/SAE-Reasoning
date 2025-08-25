@@ -22,8 +22,12 @@ intervention_configs=(
     # '{"feature_idx": 1160, "max_activation": 5.395, "strength": 1.0}'
     # '{"feature_idx": 3466, "max_activation": 1.63, "strength": 1.0}'
     # '{"feature_idx": 14907, "max_activation": 6.228, "strength": 1.0}'
-    '{"15796": {"max_activation": 5.084, "strength": 1.0}, "61104": {"max_activation": 5.0, "strength": 1.0}}'
-    '{"15796": {"max_activation": 5.084, "strength": 1.0}, "1160": {"max_activation": 5.395, "strength": 1.0}}'
+    '{15796: {"max_activation": 5.084, "strength": 1.0}, 61104: {"max_activation": 5.0, "strength": 1.0}}'
+    '{15796: {"max_activation": 5.084, "strength": 1.0}, 1160: {"max_activation": 5.395, "strength": 1.0}}'
+    '{1160: {"max_activation": 5.395, "strength": 1.0}, 61104: {"max_activation": 5.0, "strength": 1.0}}'
+    '{15796: {"max_activation": 5.084, "strength": 1.0}, 61104: {"max_activation": 5.0, "strength": 1.0}, 1160: {"max_activation": 5.395, "strength": 1.0}}'
+    # '{"feature_idx": 15796, "max_activation": 5.084, "strength": 1.0}'
+    # '{"feature_idx": 61104, "max_activation": 5.0, "strength": 1.0}'
     
 )
 intervention_type=intervention

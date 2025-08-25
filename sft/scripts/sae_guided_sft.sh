@@ -1,7 +1,8 @@
 #!/bin/bash
 
 export WANDB_MODE=offline
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 # Set the GPUs you want to use
+# export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 # Set the GPUs you want to use
+export CUDA_VISIBLE_DEVICES=0
 GPU_COUNT=$(python -c "import torch; print(torch.cuda.device_count())")
 
 echo ""

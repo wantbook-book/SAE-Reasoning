@@ -8,6 +8,7 @@ export TOKENIZERS_PARALLELISM=false
 PROMPT_TYPE="pure"
 NUM_TEST_SAMPLE=-1
 SPLIT="test"
+gpu_util=0.9
 
 # ================need to modify=======================
 # List of model paths
@@ -49,6 +50,7 @@ for MODEL_NAME_OR_PATH in "${MODEL_PATH_LIST[@]}"; do
         --overwrite \
         --data_dir "${DATA_DIR}" \
         --prompt_file ${PROMPT_FILE} \
+        --gpu_util ${gpu_util} \
         ${CHAT_TEMPLATE_ARG}
 done
 

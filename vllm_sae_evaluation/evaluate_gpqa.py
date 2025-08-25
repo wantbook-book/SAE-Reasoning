@@ -10,6 +10,7 @@ import transformers
 import time
 import re
 from vllm import LLM, SamplingParams
+from vllm.lora.request import LoRARequest
 from tqdm import tqdm
 import logging
 import sys
@@ -89,6 +90,12 @@ def load_model():
         'enforce_eager': True if sae_kwargs else False  # Required for SAE hooks to work properly
     }
     
+    # Add LoRA support if lora_path is provided
+    if args.lora_path:
+        llm_kwargs['enable_lora'] = True
+        llm_kwargs['max_lora_rank'] = 32
+        print(f"LoRA enabled with adapter path: {args.lora_path}")
+
     # Pass SAE configuration through additional_config
     llm = LLM(**llm_kwargs)
     if sae_kwargs:
@@ -253,7 +260,11 @@ def extract_final(text):
 def batch_inference(llm, sampling_params, sae_hooks, inference_batch):
     start = time.time()
     with add_hooks([], sae_hooks):
-        outputs = llm.generate(inference_batch, sampling_params)
+        # Add LoRA adapter specification if available
+        lora_request = None
+        if args.lora_path:
+            lora_request = LoRARequest("default", 1, args.lora_path)
+        outputs = llm.generate(inference_batch, sampling_params, lora_request=lora_request)
     logging.info(str(len(inference_batch)) + "size batch costing time: " + str(time.time() - start))
     response_batch = []
     pred_batch = []
@@ -493,6 +504,13 @@ if __name__ == "__main__":
         default=None,
         help='Intervention type, can be "clamp" or "intervention".',
     )
+    # LoRA related arguments
+    parser.add_argument(
+        "--lora_path",
+        type=str,
+        default=None,
+        help="Path to LoRA adapter weights.",
+    )
 
     args = parser.parse_args()
     os.makedirs(args.save_dir, exist_ok=True)
@@ -536,6 +554,8 @@ if __name__ == "__main__":
         
         # Append intervention parameters to save_result_dir
         save_result_dir = os.path.join(save_result_dir, f"sae_{sae_feature_idx}_{strength}_{max_activation}")
+    if args.lora_path:
+        save_result_dir = os.path.join(save_result_dir, *args.lora_path.split('/')[-2:])
     timestamp = time.time()
     time_str = time.strftime('%m-%d_%H-%M', time.localtime(timestamp))
     os.makedirs(save_result_dir, exist_ok=True)

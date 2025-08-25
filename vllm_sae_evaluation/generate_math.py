@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from vllm import LLM, SamplingParams
+from vllm.lora.request import LoRARequest
 import argparse
 from utils.data_loader import load_data
 import random
@@ -100,6 +101,14 @@ def parse_args():
         help='Intervention type, can be "clamp" or "intervention".',
     )
     parser.add_argument("--gpu_util", "-gu", type=str, default="0.8")
+    
+    # LoRA related arguments
+    parser.add_argument(
+        "--lora_path",
+        type=str,
+        default=None,
+        help="Path to LoRA adapter weights.",
+    )
 
     args = parser.parse_args()
     args.top_p = (
@@ -242,6 +251,13 @@ def setup(args):
             'trust_remote_code': True,
             'enforce_eager': True if sae_kwargs else False  # Required for SAE hooks to work properly
         }
+        
+        # Add LoRA support if lora_path is provided
+        if args.lora_path:
+            llm_kwargs['enable_lora'] = True
+            llm_kwargs['max_lora_rank'] = 32  # Set to accommodate LoRA adapters with higher ranks
+            print(f"LoRA enabled with adapter path: {args.lora_path}")
+        
         llm = LLM(**llm_kwargs)
         if sae_kwargs:
             if not find_spec("sae_lens"):
@@ -484,22 +500,26 @@ def main(llm, tokenizer, sae_hooks, data_name, args):
             # Avoid duplicate generation
             # Generate the first step first
             with add_hooks([], sae_hooks):
-                outputs = llm.generate(
-                    prompts,
-                    SamplingParams(
-                        temperature=args.temperature,
-                        top_p=args.top_p,
-                        max_tokens=args.max_tokens_per_call,
-                        # max_tokens=128,
-                        n=1,
-                        stop=stop_words, #+['## Step 2:'],
-                        stop_token_ids=(
-                            [151645, 151643]
-                            if "qwen2" in args.model_name_or_path.lower()
-                            else None
-                        ),
+                sampling_params = SamplingParams(
+                    temperature=args.temperature,
+                    top_p=args.top_p,
+                    max_tokens=args.max_tokens_per_call,
+                    # max_tokens=128,
+                    n=1,
+                    stop=stop_words, #+['## Step 2:'],
+                    stop_token_ids=(
+                        [151645, 151643]
+                        if "qwen2" in args.model_name_or_path.lower()
+                        else None
                     ),
                 )
+                
+                # Add LoRA adapter specification if available
+                lora_request = None
+                if args.lora_path:
+                    lora_request = LoRARequest("default", 1, args.lora_path)
+                
+                outputs = llm.generate(prompts, sampling_params, lora_request=lora_request)
             outputs = [output.outputs[0].text for output in outputs]
             # outputs = sorted(
             #     outputs, key=lambda x: int(x.request_id)

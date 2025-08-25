@@ -88,7 +88,7 @@ def get_sae_kwargs(args):
     return sae_kwargs
 
 # Includes multi-epoch training loop
-def train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader, tokenizer, run_name, output_dir):
+def train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader, tokenizer, output_dir):
     global_step = 0
 
     # Optimizer needs to be defined before preparing with accelerator
@@ -235,8 +235,8 @@ def train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader
                     if accelerator.sync_gradients:
                         # Capture the norm *before* clipping (clip_grad_norm_ returns this)
                         grad_norm = accelerator.clip_grad_norm_(peft_model.parameters(), max_norm=1.0)
-                        if grad_norm is not None: # grad_norm is tensor, convert for logging
-                           grad_norm = grad_norm.item()
+                        # if grad_norm is not None: # grad_norm is tensor, convert for logging
+                        #    grad_norm = grad_norm.item()
 
                     # --- Optimizer Step ---
                     optimizer.step()
@@ -292,7 +292,6 @@ def train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader
             accelerator.print(f"Epoch {epoch} finished. Average KL Loss: {avg_epoch_loss:.4f}")
             if accelerator.is_main_process:
                 accelerator.log({"epoch_kl_loss": avg_epoch_loss}, step=global_step)
-
     finally:
         progress_bar.close()
         # Remove main SAE hook cleanly
@@ -307,7 +306,6 @@ def train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader
              except Exception as e:
                  accelerator.print(f"Could not remove capture hook: {e}", main_process_only=True)
 
-
         # --- Final Model Saving ---
         # ... (final saving code remains the same)
         accelerator.wait_for_everyone()
@@ -318,18 +316,28 @@ def train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader
             tokenizer.save_pretrained(output_dir)
             accelerator.print(f"Final model saved to {output_dir}")
 
-
 def main():
     parser = TrlParser((SAETuningConfig))
     (args,) = parser.parse_args_and_config()
-
-    accelerator = Accelerator(log_with="tensorboard")
-    accelerate_set_seed(args.seed)
-
-    # Set up tensorboard logging directory
-    tensorboard_log_dir = os.path.join(args.log_dir, "tensorboard")
-    os.makedirs(tensorboard_log_dir, exist_ok=True)
+    sae_kwargs = get_sae_kwargs(args)
+    intervention_config = sae_kwargs['intervention_config']
     
+    # Set up tensorboard logging directory
+    current_time = datetime.now()
+    formatted_datetime = current_time.strftime("%Y_%m_%d_%H_%M_%S")
+    
+    # tensorboard_log_dir = os.path.join(
+    #     args.log_dir, 
+    #     "tensorboard",
+    #     args.base_model_name[1:] if args.base_model_name[0]=='/' else args.base_model_name,
+    #     args.sae_release if args.sae_release else args.sae_path[1:],
+    #     f"{args.sae_type}_{args.sae_hook_point}",
+    #     args.elicitation_dataset_name.split('/')[-2],
+    #     f"{intervention_config['feature_idx']}_{intervention_config['strength']}_{intervention_config['max_activation']}",
+    # )
+    # os.makedirs(tensorboard_log_dir, exist_ok=True)
+    accelerator = Accelerator(log_with='swanlab')
+    accelerate_set_seed(args.seed)
     # os.environ["WANDB_PROJECT"] = "Resa_train_model"
     os.environ['SWANLAB_PROJECT'] = "SAE_guided_sft"
 
@@ -361,35 +369,32 @@ def main():
     # Set up paths
     ##############
 
-    current_time = datetime.now()
-    formatted_datetime = current_time.strftime("%Y_%m_%d_%H_%M_%S")
-
     # Ensure CKPT_DIR is set
     # ckpt_dir = os.environ.get("CKPT_DIR", "./checkpoints") # Provide a default
     ckpt_dir = args.ckpt_dir
     if not os.path.exists(ckpt_dir) and accelerator.is_main_process:
         os.makedirs(ckpt_dir)
 
-
     output_dir = os.path.join(
         ckpt_dir,
         args.base_model_name[1:] if args.base_model_name[0]=='/' else args.base_model_name,
         args.sae_release if args.sae_release else args.sae_path[1:],
         f"{args.sae_type}_{args.sae_hook_point}",
-        args.elicitation_dataset_name.split('/')[-2]
+        args.elicitation_dataset_name.split('/')[-2],
+        f"{intervention_config['feature_idx']}_{intervention_config['strength']}_{intervention_config['max_activation']}",
     )
 
-    run_name = f"Tuning_{args.base_model_name.split('/')[-1]}_with_{args.sae_type}_{args.sae_hook_point}_on_{args.elicitation_dataset_name}_{formatted_datetime}"
-
     # Initialize tensorboard tracker on the main process after paths are set
+    run_name = f"Tuning_{args.base_model_name.split('/')[-1]}_with_{args.sae_type}_{args.sae_hook_point}_{intervention_config['feature_idx']}_{intervention_config['strength']}_{intervention_config['max_activation']}_on_{args.elicitation_dataset_name.split('/')[-2]}"
     if accelerator.is_main_process:
         accelerator.init_trackers(
-            project_name="SAE_guided_sft",
+            project_name=os.environ['SWANLAB_PROJECT'],
             config=vars(args),
-            init_kwargs={"tensorboard": {
-                "log_dir": os.path.join(tensorboard_log_dir, run_name)
+            init_kwargs={"swanlab": {
+                "name": run_name
             }}
         )
+        accelerator.print("TensorBoard tracker initialized successfully")
 
     #############################
     # Load and preprocess dataset
@@ -397,44 +402,6 @@ def main():
 
     accelerator.print(f"Loading and preprocessing dataset {args.elicitation_dataset_name} ...")
 
-    # if args.elicitation_dataset_name in RL_POST_TRAIN_CONFIG_MAP.keys():
-    #     assert args.source_model_post_train_type == "grpo"
-    #     elicitation_dataset_name = RL_POST_TRAIN_CONFIG_MAP[args.elicitation_dataset_name]
-    #     dataset_split = "train"
-    #     raw_dataset = load_dataset(elicitation_dataset_name, split=dataset_split)
-
-    #     if "2thought" in args.elicitation_dataset_name:
-    #         raw_dataset = raw_dataset.rename_column('messages', 'problem')
-    #         raw_dataset = raw_dataset.rename_column('verification_info', 'answer')
-
-    #         def extract_problem(example):
-    #             problem = example['problem'][0]["content"]
-    #             return {"problem": problem}
-
-    #         def extract_answer(example):
-    #             answer = json.loads(example['answer'])
-    #             answer = answer["answer"]["value"]
-    #             return {"answer": f"${answer}$"}
-
-    #         # Apply the transformation to the entire dataset
-    #         raw_dataset = raw_dataset.map(extract_problem)
-    #         raw_dataset = raw_dataset.map(extract_answer)
-    #     elif "thoughts3" in args.elicitation_dataset_name:
-    #         raw_dataset = raw_dataset.filter(lambda example: example["domain"] == "science")
-
-    #     processed_dataset = raw_dataset.map(
-    #         make_conv_for_sae_grpo,
-    #         fn_kwargs={
-    #             "dataset_name_or_path": elicitation_dataset_name if "thoughts3" in args.elicitation_dataset_name else None},
-    #         batched=True,
-    #     )
-
-    # else:
-    #     accelerator.print(f"Dataset {args.elicitation_dataset_name} not found in RL_POST_TRAIN_CONFIG_MAP.", main_process_only=True)
-    #     raise ValueError(f"Dataset {args.elicitation_dataset_name} not found.")
-
-    # raw_dataset = load_dataset(args.elicitation_dataset_name)
-    # processed_dataset = raw_dataset
     tokenizer = AutoTokenizer.from_pretrained(args.base_model_name)
     raw_dataset = load_dataset('json', data_files=args.elicitation_dataset_name, split='train')
     assert "R1" in args.base_model_name
@@ -479,7 +446,7 @@ def main():
     peft_model = get_peft_model(model, lora_config)
     peft_model.print_trainable_parameters()
 
-    sae_kwargs = get_sae_kwargs(args)
+    
     # 加载SAE模型
     if 'path' in sae_kwargs:
         sae = SAE.load_from_pretrained(path=sae_kwargs.pop("path"))
@@ -499,7 +466,7 @@ def main():
     ####################
 
     accelerator.print("Starting training...")
-    train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader, tokenizer, run_name, output_dir)
+    train_model(args, sae_kwargs, accelerator, peft_model, sae, train_dataloader, tokenizer, output_dir)
 
     ##########
     # Clean up

@@ -1,6 +1,7 @@
 evaluation/results
 sft/ckpts
 sft/logs
+sft/swanlog
 .vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
