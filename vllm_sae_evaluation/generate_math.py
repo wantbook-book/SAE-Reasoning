@@ -518,7 +518,6 @@ def main(llm, tokenizer, sae_hooks, data_name, args):
                 lora_request = None
                 if args.lora_path:
                     lora_request = LoRARequest("default", 1, args.lora_path)
-                
                 outputs = llm.generate(prompts, sampling_params, lora_request=lora_request)
             outputs = [output.outputs[0].text for output in outputs]
             # outputs = sorted(

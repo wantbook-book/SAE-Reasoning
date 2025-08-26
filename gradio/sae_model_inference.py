@@ -11,7 +11,9 @@ import copy
 import json
 from datetime import datetime
 os.environ['VLLM_USE_V1'] = '0'
-
+import debugpy
+debugpy.listen(5678)
+debugpy.wait_for_client()
 def main():
     # 全局变量存储模型和SAE
     model = None
@@ -138,8 +140,15 @@ def main():
                 del model
                 torch.cuda.empty_cache()
             
-            # 加载新模型
-            model = LLM(model=model_path.strip())
+            # 加载新模型 - 禁用KV cache以确保每个token都触发完整的forward pass
+            model = LLM(
+                model=model_path.strip(), 
+                gpu_memory_utilization=0.8, 
+                enforce_eager=True, 
+                trust_remote_code=True,
+                enable_chunked_prefill=False,  # 禁用分块预填充
+                max_num_seqs=1  # 限制序列数量，避免KV cache优化
+            )
             return f"✅ Model loaded successfully: {model_path}"
         except Exception as e:
             return f"❌ Failed to load model: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
@@ -203,7 +212,7 @@ def main():
             sampling_params = SamplingParams(
                 temperature=temperature,
                 top_p=top_p,
-                max_tokens=32768
+                max_tokens=32768,
             )
             
             # 如果有SAE，应用hook
@@ -213,6 +222,12 @@ def main():
                 # 暂时跳过SAE处理
                 lm_model = model.llm_engine.model_executor.driver_worker.model_runner.model
                 # 通用干预
+                # Print intervention parameters
+                print(f"Applying SAE intervention with parameters:")
+                print(f"- Feature Index: {feature_idx}")
+                print(f"- Strength: {strength}")
+                print(f"- Max Activation: {max_activation}")
+                print(f"- Hook Layer: {sae.cfg.hook_layer}")
                 sae_hooks = [
                     (
                         lm_model.model.layers[sae.cfg.hook_layer],
@@ -230,7 +245,8 @@ def main():
                 outputs = model.generate([full_prompt], sampling_params)
                 full_response = outputs[0].outputs[0].text.strip()
                 
-                return full_response
+            return full_response
+            
             
         except Exception as e:
             return f"❌ Generation failed: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
