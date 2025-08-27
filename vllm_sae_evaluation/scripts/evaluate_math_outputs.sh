@@ -31,11 +31,18 @@ OUTPUT_DIRS=(
     # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_6907_1.0_1.093"
     # "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4"
 
-    "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-500"
-    "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-3000"
-    "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-6000"
-    "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-9000"
-    "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-15000"
+    # "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-500"
+    # "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-3000"
+    # "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-6000"
+    # "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-9000"
+    # "/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/61104_1.0_5.0/checkpoint-15000"
+    "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_clamp_1160_61104_1.0_1.0_5.395_5.0"
+    "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_clamp_15796_61104_1.0_1.0_5.084_5.0"
+    "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_clamp_15796_61104_1160_1.0_1.0_1.0_5.084_5.0_5.395"
+    "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_intervention_1160_61104_1.0_1.0_5.395_5.0"
+    "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_intervention_15796_1160_1.0_1.0_5.084_5.395"
+    "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_intervention_15796_61104_1.0_1.0_5.084_5.0"
+    "/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4/sae_intervention_15796_61104_1160_1.0_1.0_1.0_5.084_5.0_5.395"
 )
 # SUBDIRS=("math_500" "math_hard" "asdiv" "college_math" "tabmwp")
 SUBDIRS=("math_500" "aime24")

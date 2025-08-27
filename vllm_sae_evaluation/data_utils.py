@@ -223,8 +223,8 @@ def print_gpqa_ckpt_results(dir_path: Path):
     print(f"\n{Colors.BOLD}{Colors.OKCYAN}📈 处理完成！共处理了 {processed_count} 个模型/数据集组合{Colors.ENDC}")
 
 if __name__ == '__main__':
-    # dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
-    # print_math_results(dir_path)
+    dir_path = Path("/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
+    print_math_results(dir_path)
     
     dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
     print_math_ckpt_results(dir_path)
@@ -232,5 +232,5 @@ if __name__ == '__main__':
     # dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/eval_results/pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B")
     # print_gpqa_results(dir_path)
 
-    # dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/gpqa_sampling_4")
+    # dir_path = Path("/angel/fwk/code/SAE-Reasoning/vllm_sae_evaluation/outputs/angel/fwk/models/deepseek-ai/DeepSeek-R1-Distill-Llama-8B")
     # print_gpqa_results(dir_path)
