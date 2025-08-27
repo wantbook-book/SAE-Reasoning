@@ -424,24 +424,42 @@ def eval_cot(model, sae_hooks, tokenizer, dataset, output_path):
     if args.enable_activation_logging and activation_logger.has_data():
         h5_path = output_path.replace('.jsonl', '_activations.h5')
         
-        # Convert lists to numpy arrays for efficient storage
-        before_array = np.array(activation_logger.before_activations) if activation_logger.before_activations else np.array([])
-        after_array = np.array(activation_logger.after_activations) if activation_logger.after_activations else np.array([])
-        
+        # Handle variable-length sequences by concatenating and storing indices
         with h5py.File(h5_path, 'w') as f:
-            # Save activation data
-            if before_array.size > 0:
-                f.create_dataset('before_activations', data=before_array, compression='gzip', compression_opts=9)
-            if after_array.size > 0:
-                f.create_dataset('after_activations', data=after_array, compression='gzip', compression_opts=9)
+            if activation_logger.before_activations:
+                # Concatenate all activations and store sample boundaries
+                before_concat = np.concatenate(activation_logger.before_activations, axis=0)
+                before_lengths = [arr.shape[0] for arr in activation_logger.before_activations]
+                before_indices = np.cumsum([0] + before_lengths[:-1])  # Start indices for each sample
+                
+                f.create_dataset('before_activations', data=before_concat, compression='gzip', compression_opts=9)
+                f.create_dataset('before_sample_lengths', data=np.array(before_lengths))
+                f.create_dataset('before_sample_indices', data=before_indices)
+                before_shape_info = f"concatenated: {before_concat.shape}, samples: {len(before_lengths)}"
+            else:
+                before_shape_info = 'empty'
+            
+            if activation_logger.after_activations:
+                # Concatenate all activations and store sample boundaries
+                after_concat = np.concatenate(activation_logger.after_activations, axis=0)
+                after_lengths = [arr.shape[0] for arr in activation_logger.after_activations]
+                after_indices = np.cumsum([0] + after_lengths[:-1])  # Start indices for each sample
+                
+                f.create_dataset('after_activations', data=after_concat, compression='gzip', compression_opts=9)
+                f.create_dataset('after_sample_lengths', data=np.array(after_lengths))
+                f.create_dataset('after_sample_indices', data=after_indices)
+                after_shape_info = f"concatenated: {after_concat.shape}, samples: {len(after_lengths)}"
+            else:
+                after_shape_info = 'empty'
             
             # Save metadata
             f.attrs['timestamp'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             f.attrs['num_samples'] = len(activation_logger.before_activations)
             f.attrs['data_format'] = 'float32'
-            f.attrs['file_format'] = 'hdf5'
-            f.attrs['before_shape'] = str(before_array.shape) if before_array.size > 0 else 'empty'
-            f.attrs['after_shape'] = str(after_array.shape) if after_array.size > 0 else 'empty'
+            f.attrs['file_format'] = 'hdf5_variable_length'
+            f.attrs['before_shape'] = before_shape_info
+            f.attrs['after_shape'] = after_shape_info
+            f.attrs['storage_method'] = 'concatenated_with_indices'
         
         print(f"Activation data saved to: {h5_path}")
         print(f"File size: {os.path.getsize(h5_path) / (1024*1024):.2f} MB")
@@ -562,7 +580,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--enable_activation_logging",
         action="store_true",
-        help="Enable activation logging to save before/after SAE activations to pt file.",
+        help="Enable activation logging to save before/after SAE activations to h5 file.",
     )
 
     args = parser.parse_args()
