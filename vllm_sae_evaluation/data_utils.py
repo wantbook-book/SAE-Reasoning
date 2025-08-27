@@ -226,11 +226,11 @@ if __name__ == '__main__':
     # dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
     # print_math_results(dir_path)
     
-    # dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
-    # print_math_ckpt_results(dir_path)
+    dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/math_eval_sampling_4")
+    print_math_ckpt_results(dir_path)
 
     # dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/eval_results/pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B")
     # print_gpqa_results(dir_path)
 
-    dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/gpqa_sampling_4")
-    print_gpqa_results(dir_path)
+    # dir_path = Path("/pubshare/fwk/code/sae/SAE-Reasoning2/vllm_sae_evaluation/outputs/pubshare/LLM/deepseek-ai/DeepSeek-R1-Distill-Llama-8B/gpqa_sampling_4")
+    # print_gpqa_results(dir_path)

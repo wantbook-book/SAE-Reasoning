@@ -3,3 +3,4 @@ sae_lens==5.5.2
 sae-dashboard
 debugpy
 math-verify[antlr4_13_2]
+h5py

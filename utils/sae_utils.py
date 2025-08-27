@@ -42,6 +42,55 @@ def add_hooks(
             h.remove()
 
 
+# 全局变量存储激活数据
+class ActivationLogger:
+    def __init__(self):
+        self.before_activations = []
+        self.after_activations = []
+        self.enabled = False
+    
+    def clear(self):
+        self.before_activations.clear()
+        self.after_activations.clear()
+    
+    def enable(self):
+        self.enabled = True
+        self.clear()
+    
+    def disable(self):
+        self.enabled = False
+    
+    def enable_logging(self):
+        """Enable activation logging and clear existing data"""
+        self.enable()
+    
+    def disable_logging(self):
+        """Disable activation logging"""
+        self.disable()
+    
+    def has_data(self):
+        """Check if there is any recorded activation data"""
+        return len(self.before_activations) > 0 or len(self.after_activations) > 0
+    
+    def get_data(self):
+        """Get all recorded activation data with metadata"""
+        import datetime
+        return {
+            'activations_before': self.before_activations,
+            'activations_after': self.after_activations,
+            'metadata': {
+                'timestamp': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'num_samples': len(self.before_activations),
+                'data_format': 'numpy_float32'
+            }
+        }
+    
+    def clear_data(self):
+        """Clear all recorded activation data"""
+        self.clear()
+
+activation_logger = ActivationLogger()
+
 def get_intervention_hook(
     sae: SAE,
     feature_idx: int,
@@ -61,6 +110,10 @@ def get_intervention_hook(
             sae.device = activations.device
             sae.to(sae.device)
 
+        # 记录激活前的数据
+        if activation_logger.enabled:
+            activation_logger.before_activations.append(activations.detach().cpu().float().numpy())
+
         features = sae.encode(activations)
         reconstructed = sae.decode(features)
         error = activations.to(features.dtype) - reconstructed
@@ -69,6 +122,10 @@ def get_intervention_hook(
 
         activations_hat = sae.decode(features) + error
         activations_hat = activations_hat.type_as(activations)
+
+        # 记录激活后的数据
+        if activation_logger.enabled:
+            activation_logger.after_activations.append(activations_hat.detach().cpu().float().numpy())
 
         if torch.is_tensor(output):
             return activations_hat
