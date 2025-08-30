@@ -12,8 +12,8 @@ import json
 from datetime import datetime
 os.environ['VLLM_USE_V1'] = '0'
 import debugpy
-debugpy.listen(5678)
-debugpy.wait_for_client()
+# debugpy.listen(5678)
+# debugpy.wait_for_client()
 def main():
     # 全局变量存储模型和SAE
     model = None

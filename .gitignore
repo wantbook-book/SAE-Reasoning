@@ -2,7 +2,9 @@ evaluation/results
 sft/ckpts
 sft/logs
 sft/swanlog
+extraction/data
 .vscode
+.cursor/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
